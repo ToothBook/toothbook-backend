@@ -5,9 +5,10 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 
 //models
-const Service = require('Services');
-const Appointment = require('Appointment');
+const Service = require('./Services');
+const Appointment = require('./Appointment');
 
+//database - mongoose
 mongoose.connect('mongodb://localhost:27017/DbToothbook', { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true });
 
 mongoose.connection.on('error', console.error.bind(console, 'connection error:'));
@@ -19,7 +20,7 @@ app.use(cors());
 
 //Services - Admin side
 app.get('/api/service/list', (req, res) => {
-    Service.find({}).exec((err, services) => {
+    Service.find({}, (err, services) => {
         if (err) {
             return res.status(404).send('Error while getting list of services!');
         }
@@ -27,16 +28,16 @@ app.get('/api/service/list', (req, res) => {
     })
 })
 
-app.post('/api/sevice/create', (req, res) => {
+app.post('/api/service/create', (req, res) => {
+    console.log(req.body)
     const service = new Service({ name: req.body.name, time: req.body.time });
     service.save((err) => {
         if (err) return res.status(404).send({ message: err.message });
-
         return res.send({ service });
     });
 });
 
-app.post('/api/sevice/update/:id', (req, res) => {
+app.post('/api/service/update/:id', (req, res) => {
     Service.findByIdAndUpdate(req.params.id, req.body.data, { new: true }, (err, service) => {
         if (err) return res.status(404).send({ message: err.message });
         return res.send({ message: 'Service is successfully updated', service })
@@ -59,14 +60,14 @@ app.get('/api/appointment/list', (req, res) => {
 })
 
 app.post('/api/appointment/create', (req, res) => {
-    const appointment = new Appointment({ 
-        firstname: req.body.firstname, 
-        lastname: req.body.lastname, 
-        email: req.body.email, 
+    const appointment = new Appointment({
+        firstname: req.body.firstname,
+        lastname: req.body.lastname,
+        email: req.body.email,
         contact: req.body.contact,
-        date: req.body.date, 
+        date: req.body.date,
         reason: req.body.reason,
-        note: req.body.note, 
+        note: req.body.note,
         status: req.body.status,
     });
     appointment.save((err) => {
