@@ -38,14 +38,15 @@ app.post('/api/service/create', (req, res) => {
 });
 
 app.post('/api/service/update/:id', (req, res) => {
-    Service.findByIdAndUpdate(req.params.id, req.body.data, { new: true }, (err, service) => {
+    console.log(req.body)
+    Service.findByIdAndUpdate(req.params.id, req.body, { new: true }, (err, service) => {
         if (err) return res.status(404).send({ message: err.message });
         return res.send({ message: 'Service is successfully updated', service })
     })
 })
 
 app.post('/api/service/delete/:id', (req, res) => {
-    Service.findByIdAndUpdate(req.params.id, (err, service) => {
+    Service.findByIdAndRemove(req.params.id, (err, service) => {
         if (err) return res.status(404).send({ message: err.message });
         return res.send({ message: 'Service is successfully deleted!', service })
     })
@@ -84,7 +85,7 @@ app.post('/api/appointment/update/:id', (req, res) => {
 })
 
 app.post('/api/appointment/delete/:id', (req, res) => {
-    Appointment.findByIdAndUpdate(req.params.id, (err, appointment) => {
+    Appointment.findByIdAndRemove(req.params.id, (err, appointment) => {
         if (err) return res.status(404).send({ message: err.message });
         return res.send({ message: 'Service is successfully deleted!', appointment })
     })
